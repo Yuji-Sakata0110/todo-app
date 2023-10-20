@@ -4,3 +4,4 @@ __pycache__
 migrations
 .python-version
 .venv
+node_modules
