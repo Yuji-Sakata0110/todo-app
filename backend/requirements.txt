@@ -1,0 +1,10 @@
+asgiref==3.7.2
+Django==3.2.22
+django-cors-headers==4.3.0
+djangorestframework==3.14.0
+environ==1.0
+psycopg2==2.9.9
+Pygments==2.16.1
+python-dotenv==1.0.0
+pytz==2023.3.post1
+sqlparse==0.4.4

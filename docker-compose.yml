@@ -1,0 +1,28 @@
+# Docker構築時に利用する設定や環境変数
+
+# services:
+#   db:
+#     image: postgres
+#     volumes:
+#       - ./data/db:/var/lib/postgresql/data
+#     ports:
+#       - "5432"
+#     environment:
+#       - POSTGRES_DB=${POSTGRES_DB}
+#       - POSTGRES_USER=${POSTGRES_USER}
+#       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#   web:
+#     build: .
+#     command: python manage.py runserver 0.0.0.0:8000
+#     volumes:
+#       - .:/code
+#     ports:
+#       - "8000:8000"
+#     environment:
+#       - POSTGRES_NAME=${POSTGRES_NAME}
+#       - POSTGRES_USER=${POSTGRES_USER}
+#       - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+#       - PORT=${PORT}
+#       - SECRET_KEY=${SECRET_KEY}
+#     depends_on:
+#       - db
