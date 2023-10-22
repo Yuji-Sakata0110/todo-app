@@ -1,12 +1,10 @@
 from django.contrib import admin
 from django.urls import path, include
-from rest_framework import routers
-from todo import views
-
-router = routers.DefaultRouter()
-router.register(r"todos", views.TodoView, "todo")
+from todo.views import TodoApiView, TodoDetailApiView
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include(router.urls)),
+    path("api-auth/", include("rest_framework.urls")),
+    path("api/", TodoApiView.as_view()),
+    path("api/<int:todo_id>/", TodoDetailApiView.as_view()),
 ]
