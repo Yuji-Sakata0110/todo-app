@@ -1,10 +1,10 @@
 from django.contrib import admin
-from django.urls import path, include
-from todo.views import TodoApiView, TodoDetailApiView
+from django.urls import path, URLResolver
+from todo.views import TodoApiView, TodoDetailApiView, auth_login
 
-urlpatterns = [
+urlpatterns: list[URLResolver] = [
     path("admin/", admin.site.urls),
-    path("api-auth/", include("rest_framework.urls")),
+    path("auth/login/", auth_login, name="auth_login"),
     path("api/", TodoApiView.as_view()),
     path("api/<int:todo_id>/", TodoDetailApiView.as_view()),
 ]
