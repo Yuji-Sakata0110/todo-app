@@ -14,6 +14,6 @@ export const signin = async (): Promise<void> => {
 };
 
 const user: { user: string; password: string } = {
-  user: "yuji.sakata0110@gmail.com",
+  user: "sample@gmail.com",
   password: "aaa",
 };
