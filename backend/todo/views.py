@@ -1,12 +1,17 @@
 import json
 from django.contrib.auth import authenticate, login
 from django.http import HttpResponse
-from .serializers import TodoSerializer
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from django.db.models.manager import BaseManager
+from django.contrib.auth.models import AbstractBaseUser
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework.status import HTTP_200_OK
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateDestroyAPIView
 from .models import Todo
+from .serializers import TodoSerializer
+from drf_yasg.utils import swagger_auto_schema
 
 
 def auth_login(request) -> HttpResponse:
@@ -14,7 +19,9 @@ def auth_login(request) -> HttpResponse:
     username: str = body.get("username")
     password: str = body.get("password")
 
-    user = authenticate(request, username=username, password=password)
+    user: AbstractBaseUser | None = authenticate(
+        request, username=username, password=password
+    )
 
     if user is not None:
         login(request, user)
@@ -23,99 +30,28 @@ def auth_login(request) -> HttpResponse:
         raise Exception("except")
 
 
+class DecoratedTokenObtainPairView(TokenObtainPairView):
+    @swagger_auto_schema(responses={HTTP_200_OK: TokenObtainPairSerializer})
+    def post(self, request, *args, **kwargs) -> Response:
+        return super().post(request, *args, **kwargs)
+
+
+class DecoratedTokenRefreshView(TokenRefreshView):
+    @swagger_auto_schema(responses={HTTP_200_OK: TokenObtainPairSerializer})
+    def post(self, request, *args, **kwargs) -> Response:
+        return super().post(request, *args, **kwargs)
+
+
 # api views
-class TodoApiView(APIView):
+class TodoApiView(ListCreateAPIView):
     # add permission to check if user is authenticated
     # permission_classes: list[type[IsAuthenticated]] = [IsAuthenticated]
-
-    # 1 get method show all todos
-    def get(self, request, *args, **kwargs) -> Response:
-        """
-        List all the todo items for given requested user
-        """
-        todos = Todo.objects.all()
-        serializer = TodoSerializer(todos, many=True)
-        return Response(serializer.data, status=HTTP_200_OK)
-
-    def post(self, request, *args, **kwargs) -> Response:
-        data = {
-            "title": request.data.get("title"),
-            "description": request.data.get("description"),
-            "completed": request.data.get("completed"),
-            "user": request.user.id,
-        }
-        serializer = TodoSerializer(data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=HTTP_200_OK)
-        # invalid error
-        return Response(
-            {"res": "Request is invalid."},
-            status=HTTP_400_BAD_REQUEST,
-        )
+    queryset: BaseManager[Todo] = Todo.objects.all()
+    serializer_class = TodoSerializer
 
 
-class TodoDetailApiView(APIView):
+class TodoDetailApiView(RetrieveUpdateDestroyAPIView):
     # add permission to check if user is authenticated
-    permission_classes: list[type[IsAuthenticated]] = [IsAuthenticated]
-
-    def get_object(self, todo_id, user_id) -> Todo | None:
-        """
-        Helper method to get the object with given todo_id, and user_id
-        """
-        try:
-            return Todo.objects.get(id=todo_id, user=user_id)
-        except Todo.DoesNotExist:
-            return None
-
-    # 1. get method Retrieve detail data
-    def get(self, request, todo_id, *args, **kwargs) -> Response:
-        """
-        Retrieves the Todo with given todo_id
-        """
-        todo_instance = self.get_object(todo_id, request.user.id)
-        if not todo_instance:
-            return Response(
-                {"res": "Object with todo id does not exists"},
-                status=HTTP_400_BAD_REQUEST,
-            )
-
-        serializer = TodoSerializer(todo_instance)
-        return Response(serializer.data, status=HTTP_200_OK)
-
-    # 2. Update
-    def put(self, request, todo_id, *args, **kwargs) -> Response:
-        """
-        Updates the todo item with given todo_id if exists
-        """
-        todo_instance = self.get_object(todo_id, request.user.id)
-        if not todo_instance:
-            return Response(
-                {"res": "Object with todo id does not exists"},
-                status=HTTP_400_BAD_REQUEST,
-            )
-        data = {
-            "title": request.data.get("title"),
-            "description": request.data.get("description"),
-            "completed": request.data.get("completed"),
-            "user": request.user.id,
-        }
-        serializer = TodoSerializer(instance=todo_instance, data=data, partial=True)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=HTTP_200_OK)
-        return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
-
-    # 3. Delete
-    def delete(self, request, todo_id, *args, **kwargs) -> Response:
-        """
-        Deletes the todo item with given todo_id if exists
-        """
-        todo_instance = self.get_object(todo_id, request.user.id)
-        if not todo_instance:
-            return Response(
-                {"res": "Object with todo id does not exists"},
-                status=HTTP_400_BAD_REQUEST,
-            )
-        todo_instance.delete()
-        return Response({"res": "Object deleted!"}, status=HTTP_200_OK)
+    # permission_classes: list[type[IsAuthenticated]] = [IsAuthenticated]
+    queryset: BaseManager[Todo] = Todo.objects.all()
+    serializer_class = TodoSerializer

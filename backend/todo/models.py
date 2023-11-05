@@ -11,7 +11,6 @@ class Todo(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField()
     completed = models.BooleanField(default=False)
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
 
     def _str_(self) -> str:
         return self.title
@@ -52,12 +51,10 @@ class User(AbstractBaseUser, PermissionsMixin):
     """Custom User"""
 
     class Meta:
-        verbose_name: str = "ユーザ"
-        verbose_name_plural: str = "ユーザ"
+        verbose_name: str = "CustomeUsers"
+        verbose_name_plural: str = "CustomeUsers"
 
-    uuid = models.UUIDField(
-        default=uuid_lib.uuid4, primary_key=True, editable=False
-    )  # 管理ID
+    id = models.UUIDField(default=uuid_lib.uuid4, primary_key=True, editable=False)
     username = models.CharField(max_length=30, unique=False)  # ユーザ氏名
     email = models.EmailField(unique=True, blank=True, null=True)  # メールアドレス = これで認証する
 

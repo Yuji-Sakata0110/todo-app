@@ -14,6 +14,7 @@ from pathlib import Path
 import os
 from typing import Any
 from dotenv import load_dotenv
+from datetime import timedelta
 
 load_dotenv(".env")
 
@@ -42,6 +43,8 @@ INSTALLED_APPS: list[str] = [
     "todo",
     "corsheaders",
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",  # 使用済みのRefreshTokenの無効化
+    "drf_yasg",  # swagger-ui
 ]
 
 MIDDLEWARE: list[str] = [
@@ -139,3 +142,19 @@ CORS_ORIGIN_WHITELIST: list[str] = [
 ]
 
 AUTH_USER_MODEL: str = "todo.User"
+
+# RestFrameWork
+REST_FRAMEWORK: dict[str, tuple[str]] = {
+    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
+    ),
+}
+
+# JWT の詳細設定
+SIMPLE_JWT: dict[str, Any] = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=15),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
+    "ROTATE_REFRESH_TOKENS": True,
+    "UPDATE_LAST_LOGIN": True,
+}
