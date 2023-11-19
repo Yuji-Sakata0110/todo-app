@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "flask-todo",
+            "database": "${workspaceFolder:todo-app}/flk_backend/instance/app.sqlite3"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

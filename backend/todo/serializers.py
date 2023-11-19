@@ -3,6 +3,22 @@ from rest_framework import serializers
 from .models import Todo
 
 
+class SignupSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+
+# bodyは必要か？ JWT Token をデコードすると問題解消されるか？
+class LogoutSerializer(serializers.Serializer):
+    email = serializers.CharField()
+    password = serializers.CharField()
+
+
 class TodoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Todo

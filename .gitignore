@@ -5,3 +5,4 @@ migrations
 .python-version
 .venv
 node_modules
+.flk_venv

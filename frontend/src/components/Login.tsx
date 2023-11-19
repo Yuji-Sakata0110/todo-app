@@ -1,11 +1,10 @@
-import React, { useState, useEffect, Dispatch, SetStateAction } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Input, Label, FormGroup, Form } from "reactstrap";
 import { todoInterface } from "../interfaces/todo";
-import { PropsInterface } from "../interfaces/props";
 import { validation } from "../utils/validation";
 import { getTodos, postTodo, handleCheckboxChange } from "../api/todo";
 
-export default function Login(props: PropsInterface): React.JSX.Element {
+export default function Login(): React.JSX.Element {
   const [todoItems, setTodoItems] = useState<todoInterface[]>([]);
   const [completedItems, setCompletedItems] = useState<todoInterface[]>([]);
   const [inputText, setInputText] = useState<string>("");
@@ -20,9 +19,7 @@ export default function Login(props: PropsInterface): React.JSX.Element {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
-
     !validation(inputText) && postTodo(inputText);
-
     setInputText("");
   };
   return (
@@ -57,6 +54,7 @@ export default function Login(props: PropsInterface): React.JSX.Element {
                   <FormGroup check inline>
                     <Input
                       type="checkbox"
+                      checked={todoItem.completed}
                       onChange={() => handleCheckboxChange(todoItem)}
                     />
                     <Label check>{todoItem.title}</Label>
@@ -68,11 +66,18 @@ export default function Login(props: PropsInterface): React.JSX.Element {
         </div>
         <div className="card m-5 p-3">
           <h2>Completed</h2>
-          <ul className="list-group list-group-flush ms-3">
+          <ul className="list-group list-group-flush">
             {completedItems.slice(-10).map((completedItem: todoInterface) => (
-              <li key={completedItem.id} className="completed m-2">
-                {completedItem.title}
-              </li>
+              <div key={completedItem.id} className="completed">
+                <FormGroup check inline>
+                  <Input
+                    type="checkbox"
+                    checked={completedItem.completed}
+                    onChange={() => handleCheckboxChange(completedItem)}
+                  />
+                  <Label check>{completedItem.title}</Label>
+                </FormGroup>
+              </div>
             ))}
           </ul>
         </div>

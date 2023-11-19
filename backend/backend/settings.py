@@ -145,7 +145,7 @@ AUTH_USER_MODEL: str = "todo.User"
 
 # RestFrameWork
 REST_FRAMEWORK: dict[str, tuple[str]] = {
-    "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
@@ -157,4 +157,9 @@ SIMPLE_JWT: dict[str, Any] = {
     "REFRESH_TOKEN_LIFETIME": timedelta(days=30),
     "ROTATE_REFRESH_TOKENS": True,
     "UPDATE_LAST_LOGIN": True,
+    "AUTH_COOKIE": "access_token",
+    "AUTH_COOKIE_SECURE": True,
+    "AUTH_COOKIE_HTTP_ONLY": True,
+    # あとで意味を調べる。
+    "AUTH_COOKIE_SAMESITE": "lax",
 }

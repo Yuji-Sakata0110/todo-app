@@ -9,7 +9,6 @@ import {
   NavLink,
 } from "reactstrap";
 import { PropsNavigationInterface } from "../interfaces/props";
-import { login, logout, signin } from "../utils/auth";
 
 export default function Navigation(
   props: PropsNavigationInterface
@@ -33,6 +32,11 @@ export default function Navigation(
             {props.isLogin && (
               <NavLink href="/" onClick={() => handleSignout()}>
                 Signout
+              </NavLink>
+            )}
+            {!props.isLogin && (
+              <NavLink href="/" onClick={() => handleSignout()}>
+                login
               </NavLink>
             )}
           </NavItem>
