@@ -6,3 +6,4 @@ migrations
 .venv
 node_modules
 .flk_venv
+.flaskenv
