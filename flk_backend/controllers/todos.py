@@ -5,7 +5,7 @@ from models.models import db, Todo
 todos = Blueprint("todos", __name__)
 
 
-@todos.route("/api/todos", methods=["GET"])
+@todos.route("/todos", methods=["GET"])
 def get_todos() -> jsonify:
     todos: List = Todo.query.all()
     response: list[dict[str, str | bool]] = [
@@ -20,7 +20,7 @@ def get_todos() -> jsonify:
     return jsonify(response), 200
 
 
-@todos.route("/api/todos", methods=["POST"])
+@todos.route("/todos", methods=["POST"])
 def post_todos() -> jsonify:
     try:
         body: dict = request.get_json()
